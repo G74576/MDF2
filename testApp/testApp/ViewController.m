@@ -33,9 +33,9 @@
     // Dispose of any resources that can be recreated.
 }
 
+//Accessing twitter account and populating objects
 -(void)getFriends
 {
-    
     ACAccountStore *accountStore = [[ACAccountStore alloc] init];
     if (accountStore != nil)
     {
@@ -51,6 +51,7 @@
                         ACAccount *currentAccount = [twitterAccounts objectAtIndex:0];
                         if (currentAccount != nil)
                         {
+                            //Friends list
                            NSString *friendListString = @"https://api.twitter.com/1.1/friends/list.json?cursor=-1&skip_status=true&include_user_entities=false";
                             
                             SLRequest *request = [SLRequest requestForServiceType:SLServiceTypeTwitter requestMethod:SLRequestMethodGET URL:[NSURL URLWithString:friendListString] parameters:nil];
@@ -68,22 +69,26 @@
                                         {
                                             [myCollectionView reloadData];
                                             
-                                            
+                                            //Creating array of friends
                                             usersArray = [tweetDictionary objectForKey:@"users"];
                                             usersStored = [[NSMutableArray alloc] init];
                                             
                                             for (int i=0; i<[usersArray count]; i++)
                                             {
+                                                //Creating Image URL
                                                 NSString *imgURL = [[usersArray objectAtIndex:i]objectForKey:@"profile_image_url"];
                                                 
+                                                //Ammeding appending string so that original image size loads
                                                 NSString *lgImgUrl = [imgURL stringByReplacingOccurrencesOfString:@"_normal" withString:@""];
                                                 
                                                 NSData *data = [NSData dataWithContentsOfURL:[NSURL URLWithString:lgImgUrl]];
                                                 
+                                                //Gathering username for friends
                                                 NSString *userHandle = [[usersArray objectAtIndex:i]objectForKey:@"screen_name"];
                                                 
                                                 UIImage *userImg = [UIImage imageWithData:data];
                                                 
+                                                //Passing user name and profile image to Follower object
                                                 FollowerInfo *info = [[FollowerInfo alloc]initWithTitle:userHandle profileImages:userImg];
                                                 [usersStored addObject:info];
                                             }
